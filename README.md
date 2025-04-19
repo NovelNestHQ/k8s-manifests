@@ -37,8 +37,8 @@ Before you begin, ensure you have the following tools installed:
 ### Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/NovelNestHQ.git
-cd NovelNestHQ/k8s-manifests
+git clone https://github.com/NovelNestHQ/k8s-manifests.git
+cd k8s-manifests
 ```
 
 ### Using the Automated Deployment Script
