@@ -1,0 +1,22 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: inventory-prisma-migrate
+spec:
+  template:
+    spec:
+      containers:
+        - name: migrate
+          image: quay.io/novelnest/inventory-service:latest
+          command: ["npx", "prisma", "migrate", "deploy"]
+          env:
+            - name: DATABASE_URL
+              value: "postgresql://user:password@postgres-inventory:5432/books_db"
+          # volumeMounts:
+          #   - name: prisma-volume
+          #     mountPath: /app/prisma
+      restartPolicy: OnFailure
+      # volumes:
+      #   - name: prisma-volume
+      #     hostPath:
+      #       path: ./prisma  # or change to ConfigMap/PVC if needed

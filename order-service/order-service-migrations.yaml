@@ -1,0 +1,16 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: order-prisma-migrate
+spec:
+  template:
+    spec:
+      containers:
+        - name: migrate
+          image: quay.io/novelnest/order-service:latest
+          command: ["npx", "prisma", "migrate", "deploy"]
+          env:
+            - name: DATABASE_URL
+              value: "postgresql://user:password@postgres-order:5432/orders_db"
+      restartPolicy: Never
+  backoffLimit: 3

@@ -1,0 +1,16 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: user-prisma-migrate
+spec:
+  template:
+    spec:
+      containers:
+        - name: migrate
+          image: quay.io/novelnest/user-service:latest
+          command: ["npx", "prisma", "migrate", "deploy"]
+          env:
+            - name: DATABASE_URL
+              value: "postgresql://user:password@postgres-user:5432/users_db"
+      restartPolicy: Never
+  backoffLimit: 2

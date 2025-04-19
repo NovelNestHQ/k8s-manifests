@@ -1,0 +1,25 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kong-migrations
+spec:
+  template:
+    metadata:
+      name: kong-migrations
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: kong-migrations
+          image: quay.io/lib/kong:latest
+          command: ["kong", "migrations", "bootstrap"]
+          env:
+            - name: KONG_DATABASE
+              value: "postgres"
+            - name: KONG_PG_HOST
+              value: "kong-database"
+            - name: KONG_PG_USER
+              value: "kong"
+            - name: KONG_PG_PASSWORD
+              value: "kong"
+            - name: KONG_PG_DATABASE
+              value: "kong"

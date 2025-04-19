@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kong-config
+data:
+  kong-declarative-config.yml: |
+    _format_version: "3.0"
+    _transform: true
+
+    services:
+      - name: catalog-service
+        host: catalog-service
+        port: 4000
+        protocol: http
+        routes:
+          - name: catalog-service-routes
+            paths:
+              - /catalog
+            strip_path: true
+
+      - name: inventory-service
+        host: inventory-service
+        port: 3000
+        protocol: http
+        routes:
+          - name: inventory-service-routes
+            paths:
+              - /inventory
+            strip_path: true
+
+      - name: order-service
+        host: order-service
+        port: 5010
+        protocol: http
+        routes:
+          - name: order-service-routes
+            paths:
+              - /order
+            strip_path: true
+
+      - name: user-service
+        host: user-service
+        port: 5000
+        protocol: http
+        routes:
+          - name: user-service-routes
+            paths:
+              - /user
+            strip_path: true

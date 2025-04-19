@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: supertokens-service
+spec:
+  ports:
+    - port: 3567
+      targetPort: 3567
+  selector:
+    app: supertokens-service
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: supertokens-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: supertokens-service
+  template:
+    metadata:
+      labels:
+        app: supertokens-service
+    spec:
+      containers:
+        - name: supertokens
+          image: registry.supertokens.io/supertokens/supertokens-postgresql
+          ports:
+            - containerPort: 3567
+          env:
+            - name: POSTGRESQL_CONNECTION_URI
+              value: "postgresql://user:password@postgres-auth:5432/users_db"
+            - name: POSTGRESQL_TABLE_NAMES_PREFIX
+              value: "supertokens"

@@ -1,0 +1,59 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-service
+spec:
+  ports:
+    - port: 5000
+      targetPort: 5000
+  selector:
+    app: user-service
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-service
+  template:
+    metadata:
+      labels:
+        app: user-service
+    spec:
+      containers:
+        - name: user-service
+          image: quay.io/novelnest/user-service:latest
+          ports:
+            - containerPort: 5000
+          env:
+            - name: USERSERVICE_API_URL
+              value: "http://localhost:5000"
+            - name: VITE_APP_UI_URL
+              value: "http://localhost:5173"
+            - name: USER_DATABASE_URL
+              value: "postgresql://user:password@postgres-user:5432/users_db"
+            - name: RABBITMQ_URL
+              value: "amqp://guest:guest@rabbitmq:5672"
+            - name: QUEUE_NAME
+              value: "orders"
+            - name: PORT
+              value: "5000"
+            - name: SUPERTOKENS_DATABASE_URL
+              value: "postgresql://user:password@postgres-auth:5432/users_db"
+            - name: SUPERTOKENS_CORE_URL
+              value: "http://supertokens-service:3567"
+            - name: VITE_APP_PORT
+              value: "5173"
+            - name: JWT_SECRET
+              value: "qwertyuiopasdfghjklzxcvbnm123456"
+      #     volumeMounts:
+      #       - name: prisma
+      #         mountPath: /app/prisma
+      # volumes:
+      #   - name: prisma
+      #     hostPath:
+      #       path: /app/prisma
+      #       type: DirectoryOrCreate

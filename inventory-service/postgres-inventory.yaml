@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pgdata-inventory-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-inventory
+spec:
+  selector:
+    app: postgres-inventory
+  ports:
+    - port: 5432
+      targetPort: 5432
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-inventory
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres-inventory
+  template:
+    metadata:
+      labels:
+        app: postgres-inventory
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:15
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_USER
+              value: "user"
+            - name: POSTGRES_PASSWORD
+              value: "password"
+            - name: POSTGRES_DB
+              value: "books_db"
+          volumeMounts:
+            - name: pgdata-inventory
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: pgdata-inventory
+          persistentVolumeClaim:
+            claimName: pgdata-inventory-pvc

@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: inventory-service
+spec:
+  selector:
+    app: inventory-service
+  ports:
+    - port: 3000
+      targetPort: 3000
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: inventory-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: inventory-service
+  template:
+    metadata:
+      labels:
+        app: inventory-service
+    spec:
+      containers:
+        - name: inventory-service
+          image: quay.io/novelnest/inventory-service:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: RABBITMQ_URL
+              value: "amqp://guest:guest@rabbitmq:5672"
+            - name: DATABASE_URL
+              value: "postgresql://user:password@postgres-inventory:5432/books_db"
+            - name: PORT
+              value: "3000"
+            - name: JWT_SECRET
+              value: "qwertyuiopasdfghjklzxcvbnm123456"
+      #     volumeMounts:
+      #       - name: prisma-vol
+      #         mountPath: /app/prisma
+      # volumes:
+      #   - name: prisma-vol
+      #     emptyDir: {}
